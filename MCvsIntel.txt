@@ -1,1 +1,101 @@
-{\rtf1}
+1. Įvadas apie MC68020
+„Motorola MC68020“ yra vienas pirmųjų 32 bitų mikroprocesorių. Jis priklauso 68000 šeimai, kuri turi registrais pagrįstą architektūrą. MC68020 modelyje įdiegta daug instrukcijų ir adresavimo režimų bei kai kurie duomenų tipai, siekiant padidinti įvestį ir padėti įgyvendinti modulines aukšto lygio kalbas bei su jomis susijusias konstrukcijas ir duomenų struktūras. Procesorius buvo sukurtas naudojant HCMOS procesą.
+MC68020 naudoja VLSI (Very Large Scale Integration) technologiją, t.y. labai didelės integracijos masto integrinius grandymus, o tai reiškia, kad procesorius apjungia daugybę loginių elementų viename mikroschemoje. Fizinės savybės apima santykinai mažą dydį, palyginti su ankstesnės kartos mikroprocesoriais, tačiau tikslūs svorio, energijos suvartojimo ir fizinio dydžio parametrai priklauso nuo konkrečios sistemos realizacijos.
+
+2. Registrinė architektūra ir paralelumas
+MC68020 turi registrinę architektūrą; kaip teigiama:
+„Vidiniai šio mikroprocesoriaus veiksmai vyksta lygiagrečiai, leidžiant kelioms instrukcijoms būti vykdomoms vienu metu.“
+„Vamzdinė architektūra su dideliu vidinio lygiagretumo laipsniu“
+Procesorius turi 16 bendros paskirties 32-bitų registrų (D0–D7 – duomenų registrai; A0–A7 – adresų registrai):
+„Šešiolika 32 bitų bendros paskirties duomenų ir adresų registrų“
+„Turi 16 32 bitų bendros paskirties registrų, 32 bitų programos skaitiklį (PC), du 32 bitų SSP, 16 bitų SR, 32 bitų VBR…“
+„D7–D0 registrai yra duomenų registrai…“
+„A6–A0 registrai … programinės įrangos steko rodyklės arba bazinio adreso registrai.“
+„A7 registras … USP, ISP, MSP.“
+Duomenų plotis: visi 32 bitai, išskyrus SR (16 bitų).
+„Naudojant VLSI technologiją, MC68020 įgyvendintas su 32 bitų registrais ir duomenų keliais, 32 bitų adresais…“
+Registrų struktūra leidžia efektyviai palaikyti programos vykdymą, steko operacijas ir paralelinį instrukcijų vykdymą.
+
+3. Sąlygos, statuso registrai ir funkcijos
+MC68020 turi sąlygų kodus, kurie apima:
+plėtimą (X),
+neigiama (N),
+nuli (Z),
+perpildymą (V),
+pernešimą (C).
+„Jame yra sąlygos kodai … plėtimas (X), neigiamas (N), nulis (Z), perpildymas (V) ir pernešimas (C).“
+„Vartotojo baitas, kuris turi sąlygų kodus, yra … CCR.“
+Registrai ir duomenų keliai yra 32 bitų, palaikomos 8, 16, 32 ir 64 bitų duomenų operacijos.
+Adresavimo galimybės:
+„4-Gbyte direct addressing range for the MC68020“
+„16-Mbyte direct addressing range for the MC68EC020“
+„Pilnas MC68020 adresavimo diapazonas yra 4 GB kiekvienoje iš aštuonių adresų erdvių…“
+SR saugo procesoriaus būseną, o vartotojo baitas vartojamas kaip CCR. VBR nurodo išimčių vektorių lentelės bazinį adresą, o alternatyvūs funkcijų kodo registrai SFC ir DFC turi 3 bitų funkcijų kodus.
+„The CACR controls the on-chip instruction cache…“
+„The CAAR stores an address for cache control functions.“
+„The S-bit in the SR is used to select either the user or supervisor privilege level…“
+„The M bit of the SR selects which of the two [supervisor stacks] is active.“
+
+4. Duomenų tipai ir adresavimas
+MC68020/EC020 palaiko septynis pagrindinius duomenų tipus:
+Bitai
+Bitų laukai
+BCD
+Baitas
+Žodis
+Ilgas žodis
+Keturgubas žodis
+Virtuali atmintis:
+„Full support of virtual memory and virtual machine“
+„The MC68851 Paged Memory Management Unit.“
+„When the processor attempts to access a location … a page fault occurs.“
+„Even though most systems implement a smaller physical memory, the system can be made to appear to have a full 4 Gbytes… by using virtual memory techniques.“
+Procesorius palaiko puslapiavimą ir instrukcijų tęsimo mechanizmą, kad būtų įmanoma naudoti virtualią mašiną:
+„Tokia emuliuota sistema vadinama virtualia mašina.“
+„Virtualios mašinos sistemoje valdanti operacinė sistema emuliuoja naujos mašinos aparatinę įrangą…“
+„Bet koks bandymas… pasiekti supervizoriaus išteklius arba vykdyti privilegijuotas instrukcijas sukelia trapą…“
+
+5. Privilegijų lygiai ir S/M bitai
+MC68020 veikia vartotojo arba supervizoriaus privilegijų lygyje:
+„Procesorius veikia viename iš dviejų privilegijų lygių: vartotojo arba supervizoriaus lygyje.“
+„The S-bit in the SR is used to select either the user or supervisor privilege level…“
+Dauguma instrukcijų gali būti vykdomos bet kuriame lygyje, tačiau kai kurios yra privilegijuotos. Pavyzdžiui, vartotojo programoms neleidžiama vykdyti STOP arba RESET instrukcijų. Instrukcijos, veikiančios S-bitą, yra MOVE į SR, ANDI į SR, EORI į SR, ORI į SR ir RTE.
+„Išimčių apdorojimas išsaugo dabartines S ir M bitų reikšmes… ir tada nustato S-bitą…“
+
+6. ISA ir adresavimo režimai
+MC68020 instruktorių rinkinys buvo pritaikytas struktūruotoms aukšto lygio kalboms. Instrukcijos gali veikti baitais, žodžiais arba ilgais žodžiais ir palaiko 18 adresavimo režimų:
+„Registras tiesiogiai (Data Dn; Address An), registras netiesiogiai (Address An; Address su postincrement An+; Address su predecrement -An; Address su displacement d16, An), Adreso registro netiesiogiai su indeksu (d8, An, Xn; Bazinis poslinkis bd, An, Xn), Atminties netiesiogiai …, PC netiesiogiai su poslinkiu …, Absoliutus duomenų adresavimas (Short xxx.W; Long xxx.L), Immediate (#<data>)“
+
+7. Supervisor stack ir RTE instrukcija
+MC68020 turi du supervizoriaus stekus: master (MSP) ir interrupt (ISP), SR M-bitas pasirenka, kuris aktyvus.
+„RTE instrukcija grąžina į programą, kuri buvo vykdoma, kai įvyko išimtis.“
+„Ji atkuria išimties steko rėmelį, išsaugotą supervizoriaus steke.“
+
+8. Funkcijų kodai ir specialios adresų erdvės
+„Procesorius nurodo tikslinę adresų erdvę kiekvienam buso ciklui su FC2–FC0 signalais…“
+„Funkcijos kodas $7 pasirenka CPU adresų erdvę.“
+„Supervizoriaus programos gali naudoti MOVES instrukciją prieiti prie visų adresų erdvių, įskaitant… CPU adresų erdvę.“
+
+9. Instrukcijų vamzdelis ir spartinamoji atmintis
+MC68020 turi trijų žodžių instrukcijų vamzdį: B, C, D stadijos. Instrukcijų žodis yra pilnai dekoduojamas D stadijoje. Vidinė instrukcijų spartinančioji atmintis pagerina našumą:
+„Norint pasinaudoti šiomis lokalumo savybėmis, MC68020/EC020 turi vidinę instrukcijų spartinančiąją atmintį.“
+„Spartinančioji atmintis pagerina bendrą našumą, sumažindama buso ciklų skaičių…“
+
+10. Exception ir sistemos klaidos
+Procesorius įeina į išimčių apdorojimo būseną, kai pertrauka yra pripažinta, o bus klaida sukelia sistemos sustojimą:
+„Kiekvieną kartą, kai procesorius gauna bus klaidą arba sukuria adreso klaidą išimčių apdorojimo būsenoje, įvyksta katastrofiškas sistemos gedimas.“
+
+11. Spartinamoji atmintis ir palaikomi duomenų tipai
+MC68020/EC020 turi vidinę spartinančiąją atmintį, talpinančią 64 long-word įrašus (32 bitų). Palaikomi duomenų tipai: bitai, bitų laukai, 8-/16-/32-/64-bitai, BCD, baitai, žodžiai, ilgieji žodžiai, keturviečiai žodžiai. Slankiojo kablelio palaikymas vykdomas per MC68881/MC68882.
+
+12. Greitaveika ir taktų dažniai
+Laikrodžio dažniai: 16.67, 20, 25, 33.33 MHz. Minimalus buso ciklas trunka 3 taktus, reali greitaveika priklauso nuo portų pločio ir misaligned operandų. Procesorius gali pridėti wait states, jei I/O įrenginys nespėja pateikti duomenų.
+
+13. Dinamiškas duomenų perdavimas ir portų palaikymas
+MC68020/EC020 palaiko byte, word, long-word operandus, kurie gali būti misaligned. Procesorius palaiko dinamiškai nustatomą portų dydį, sąveikai su 8-, 16- ir 32-bitų I/O įrenginiais.
+„Duomenų magistralės dalis, iš kurios skaitomas kiekvienas baitas, priklauso nuo operando dydžio, A1–A0 ir porto pločio…“
+
+14–18. Buso ciklai, pertraukos, prefetch, magistralės valdymas
+MC68020/EC020 palaiko sinchroninius ir asinchroninius buso ciklus, minimalus ciklas – 3 taktai, DSACK1/DSACK0 signalai patvirtina duomenų perdavimą.
+Instrukcijų prefetch mechanizmas prašo žodžių iš spartinančiosios atminties prieš vykdymą, todėl magistralės veikla ir procesoriaus vykdymas gali būti lygiagretūs.
+MC68020/EC020 palaiko prioritetines pertraukas, autovector ir spurious vector mechanizmus. Duomenų perdavimą magistralėje koordinuoja bus arbitration, o išoriniai įrenginiai gali gauti magistralę tik per arbitražo signalus.
